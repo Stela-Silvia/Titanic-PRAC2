@@ -1,4 +1,4 @@
-# Titanic-PRAC2
+# PRACTICA 2: TITANIC
 # Estadísticas de supervivencia de los pasajeros del Titanic
 
 ## Miembros del equipo
