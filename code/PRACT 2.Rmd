@@ -89,12 +89,12 @@ Estudiaremos la relación entre las variables FamilySize (obtenida a partir de S
 relación entre estas variables y la clase (Survived vs FamilySize vs Pclass) y entre estas variables y el sexo (Survived vs FamilySize vs Sex). 
 
 
-**NOTA: ** Aunque contamos también con los datos de test.csv, como en ese fichero no contamos con los valores objetivos del conjunto, no lo utilizaremos, ya que no nos permitiría evaluar la eficiencia.
+**NOTA: ** También disponemos del fichero de datos test.csv. Sin embargo, en este fichero no disponemos de los datos correspondientes al atributo Survived (variable objetivo). Por tanto, durante toda la práctica trabajaremos con el dataset train.csv y únicamente cuando analicemos los datos utilizando un método no supervisado (clustering) haremos también uso del dataset descargado test.csv. 
 
 
 # Integración y selección de los datos de interés a analizar
 
-Partimos de dos dataset (train y test) que hemos descargado de *https://www.kaggle.com/c/titanic/data*. 
+Partimos de dos datasets (train y test) que hemos descargado de *https://www.kaggle.com/c/titanic/data*. 
 
 Lo primero que haremos será cargar las librerías que vamos a usar: 
 
@@ -178,9 +178,15 @@ if (!require(kableExtra)){
     library(kableExtra) 
 }
 
+if (!require(effects)){ 
+    install.packages("effects", dependences=TRUE) 
+    library(effects) 
+}
+
+
 ```
 
-Después, cargaremos los datos que vamos a utilizar y comprobaremos la estructura de los mismos: 
+Después, cargaremos los datos que vamos a utilizar y comprobaremos la estructura de los mismos. Tal y como se ha comentado en el apartado anterior cargaremos los dos datasets descargados pero únicamente trabajaremos con train.csv. El dataset test.csv sólo se utilizará cuando apliquemos el método no supervisado.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -188,7 +194,7 @@ Después, cargaremos los datos que vamos a utilizar y comprobaremos la estructur
 test <- read.csv('test.csv',stringsAsFactors = FALSE)
 train <- read.csv('train.csv', stringsAsFactors = FALSE)
 
-# Vemos su estructura
+# Vemos la estructura:
 str(train)
 ```
 
@@ -630,7 +636,7 @@ Al igual que en los casos anteriores se obtiene un p < 0.05.  Por tanto, se rech
 
 Crearemos un arbol de decisión para evaluar si los pasajeros del Titanic sobreviven o no a la tragedia.
 
-Para ello, tenemos que separar los datos de entrenamiento en 4 conjuntos: 
+Para ello, tenemos que separar los datos en 4 conjuntos: 
 
 - trainX, contendrá todas las variables menos la variable objetivo: Survived; y contendrá 2/3 partes de las observaciones.
 
@@ -762,7 +768,7 @@ Como podemos ver:
 
 ## Análisis: Método supervisado: Regresión logística
 
-La regresión logística se utiliza para problemas de clasificación, como el que tenemos aquí. Por lo tanto, aplicaremos la regresión logística para saber si las personas del conjunto test.csv sobrevivieron o no a la catástofre. 
+La regresión logística se utiliza para problemas de clasificación, como el que tenemos aquí. Por lo tanto, aplicaremos la regresión logística para saber si las personas del conjunto test.csv (archivo cargado inicialmente) sobrevivieron o no a la catástofre. 
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -802,6 +808,14 @@ Además, ser hombre disminuirá las probabilidades de supervivencia en exp(-2.51
 Por lo que podemos concluir que ser hombre en el Titanic fue un factor de riesgo. 
 
 Según estos resultados podemos expresar la probabilidad de supervivencia (si solo tenemos en cuenta el sexo del pasajero) como: P(Supervivencia) = exp(1.0566 - 2.5137 sexo_masculino)/ [1 + exp(1.0566 - 2.5137 sexo_masculino)]. 
+
+Procedemos ahora a mostrar el efecto del sexo en la probabilidad de sobrevivir.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+plot(allEffects(regLog_1))
+
+```
 
 
 ### Regresión logística de varias variables
